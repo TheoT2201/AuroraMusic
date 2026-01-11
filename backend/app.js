@@ -22,7 +22,7 @@ mongoose.connect(mongoURI)
 app.use('/api/tracks', trackRoutes);
 
 // Pornim serverul
-const PORT = 3000;
+const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server pornit pe portul ${PORT}`);
 });
