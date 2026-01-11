@@ -111,7 +111,6 @@ router.get('/', async (req, res) => {
     const tracks = await Track.find()
       .populate('artistRef featureRefs')
       .sort({ createdAt: -1 })
-      .limit(100)
       .lean();
 
     const withStreamUrl = tracks.map(t => ({

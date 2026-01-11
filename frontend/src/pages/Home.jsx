@@ -1,22 +1,33 @@
 import { useEffect, useState } from 'react';
 import { getTracks } from '../services/api';
-import TrackCard from '../components/TrackCard';
+import TrackGrid from '../components/TrackGrid';
+import Player from '../components/Player';
 
-function Home() {
+export default function Home() {
   const [tracks, setTracks] = useState([]);
+  const [current, setCurrent] = useState(null);
 
   useEffect(() => {
     getTracks().then(setTracks);
   }, []);
 
+  useEffect(() => {
+  getTracks().then(data => {
+    console.log('TOTAL TRACKS:', data.length);
+    data.forEach(t =>
+      console.log(t.title, '—', t.artistRef?.name)
+    );
+    setTracks(data);
+    });
+}, []);
+
+
+
   return (
-    <div>
-      <h2>Piese</h2>
-      {tracks.map(track => (
-        <TrackCard key={track._id} track={track} />
-      ))}
-    </div>
+    <>
+      <h2 className="page-title">Piese</h2>
+      <TrackGrid tracks={tracks} onPlay={setCurrent} />
+      <Player track={current} />
+    </>
   );
 }
-
-export default Home;

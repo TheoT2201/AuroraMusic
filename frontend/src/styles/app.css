@@ -1,0 +1,98 @@
+body {
+  margin: 0;
+  background: #0b1f26;
+  color: #eaf6f6;
+  font-family: sans-serif;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #0f2e36;
+  padding: 20px;
+}
+
+.logo {
+  color: #1dbf73;
+}
+
+.sidebar a {
+  display: block;
+  margin: 15px 0;
+  color: #a7c7cc;
+  cursor: pointer;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+  color: #1dbf73;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-left: 30px;
+  padding-right: 30px;
+
+}
+
+.header {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header input {
+  width: 250px;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 160px);
+  gap: 20px;
+  padding: 20px;
+}
+
+.track-card {
+  background: #12343b;
+  padding: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform .2s;
+}
+
+.track-card:hover {
+  transform: scale(1.05);
+}
+
+.cover {
+  height: 120px;
+  background: #1dbf73;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player {
+  position: fixed;
+  bottom: 0;
+  left: 220px;
+  right: 0;
+  background: #0f2e36;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.page-title {
+  margin: 20px 0;
+}
