@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const Track = require('./models/Track');
 
 // Import rute
 const trackRoutes = require('./routes/tracks');
@@ -15,7 +16,12 @@ app.use(express.json());
 const mongoURI = 'mongodb://127.0.0.1:27017/musicdb';
 
 mongoose.connect(mongoURI)
-  .then(() => console.log('Conectat la MongoDB'))
+  .then(async () => {
+    console.log('Conectat la MongoDB');
+
+    await Track.syncIndexes();
+    console.log('Track indexes synced');
+  })
   .catch(err => console.error('Eroare conectare MongoDB:', err));
 
 // Rute

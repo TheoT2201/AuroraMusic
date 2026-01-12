@@ -22,7 +22,7 @@ const trackSchema = new mongoose.Schema({
 // Indexuri (le folosim mai târziu)
 trackSchema.index({ artist: 1, album: 1, title: 1 });
 trackSchema.index({ genre: 1, year: -1 });
-trackSchema.index({ title: 'text', artist: 'text' });
 trackSchema.index({ playCount: -1 });
+trackSchema.index({ title: 'text', artist: 'text', album: 'text', genre: 'text' });
 
 module.exports = mongoose.model('Track', trackSchema);
