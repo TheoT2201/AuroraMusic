@@ -28,6 +28,15 @@ export default function Playlists() {
     loadPlaylists();
   };
 
+  const selectPlaylist = async (playlistId) => {
+    const res = await fetch(
+      `http://localhost:3000/api/playlists/${playlistId}`
+    );
+    const data = await res.json();
+    setSelected(data);
+  };
+
+
   return (
     <div className="page">
       <h2>📁 Playlists</h2>
@@ -48,7 +57,7 @@ export default function Playlists() {
           <li
             key={p._id}
             className={selected?._id === p._id ? "active" : ""}
-            onClick={() => setSelected(p)}
+            onClick={() => selectPlaylist(p._id)}
           >
             {p.name} ({p.tracks.length})
           </li>
@@ -65,10 +74,15 @@ export default function Playlists() {
           )}
 
           <ul>
-            {selected.tracks.map(t => (
-              <li key={t._id}>{t.trackId}</li>
+            {selected.tracks.map((t, index) => (
+                <li key={index}>
+                  🎵 <strong>{t.trackId.title}</strong>
+                  {" — "}
+                  {t.trackId.artistRef?.name || t.trackId.artist}
+                </li>
             ))}
           </ul>
+
         </div>
       )}
     </div>
