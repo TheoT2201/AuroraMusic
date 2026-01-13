@@ -349,3 +349,58 @@ main {
 .page {
   padding: 20px;
 }
+
+
+/* Playlist */
+.playlist-create {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.playlist-list li {
+  cursor: pointer;
+  padding: 8px;
+}
+
+.playlist-list li.active {
+  background: #1db954;
+  color: black;
+}
+
+.add-btn {
+  margin-left: auto;
+}
+
+.playlist-picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.playlist-picker {
+  background: #121212;
+  padding: 20px;
+  border-radius: 12px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.playlist-picker button {
+  padding: 8px;
+  border-radius: 6px;
+  background: #1db954;
+  border: none;
+  cursor: pointer;
+}
+
+.playlist-picker .cancel {
+  background: #333;
+  color: #ccc;
+}

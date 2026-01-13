@@ -6,6 +6,10 @@ export default function Home({ search }) {
   const [tracks, setTracks] = useState([]);
   const [current, setCurrent] = useState(null);
   const [autoplay, setAutoplay] = useState(false);
+  const [showPlaylistPicker, setShowPlaylistPicker] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState(null);
+  const [playlists, setPlaylists] = useState([]);
+
 
 
   useEffect(() => {
@@ -37,6 +41,33 @@ export default function Home({ search }) {
 
   const MAX_TRACKS = 18;
 
+  const openPlaylistPicker = async (track) => {
+    setSelectedTrack(track);
+
+    const res = await fetch("http://localhost:3000/api/playlists");
+    const data = await res.json();
+
+    setPlaylists(data);
+    setShowPlaylistPicker(true);
+  };
+
+  const addTrackToPlaylist = async (playlistId) => {
+    await fetch(
+      `http://localhost:3000/api/playlists/${playlistId}/tracks`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trackId: selectedTrack._id })
+      }
+    );
+
+    setShowPlaylistPicker(false);
+    setSelectedTrack(null);
+  };
+
+
+
+
   return (
     <div className="page">
       <h2 className="page-title">🏠 Home</h2>
@@ -47,9 +78,34 @@ export default function Home({ search }) {
           setCurrent(t);
           setAutoplay(true);
         }}
+        onAddToPlaylist={openPlaylistPicker}
       />
 
       <Player track={current} autoplay={autoplay} onAutoplayConsumed={() => setAutoplay(false)} />
+      {showPlaylistPicker && (
+        <div className="playlist-picker-overlay">
+          <div className="playlist-picker">
+            <h3>Adaugă în playlist</h3>
+            
+            {playlists.map(p => (
+              <button
+                key={p._id}
+                onClick={() => addTrackToPlaylist(p._id)}
+              >
+                {p.name}
+              </button>
+            ))}
+      
+            <button
+              className="cancel"
+              onClick={() => setShowPlaylistPicker(false)}
+            >
+              Anulează
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
