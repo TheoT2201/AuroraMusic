@@ -38,8 +38,8 @@ export default function Home({ search }) {
   const MAX_TRACKS = 18;
 
   return (
-    <>
-      <h2 className="page-title">🎧 Piese</h2>
+    <div className="page">
+      <h2 className="page-title">🏠 Home</h2>
 
       <TrackGrid
         tracks={tracks.slice(0, MAX_TRACKS)}
@@ -50,6 +50,6 @@ export default function Home({ search }) {
       />
 
       <Player track={current} autoplay={autoplay} onAutoplayConsumed={() => setAutoplay(false)} />
-    </>
+    </div>
   );
 }

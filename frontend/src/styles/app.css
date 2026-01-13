@@ -331,3 +331,21 @@ main {
   border-radius: 50%;
   background: #3ddc97;
 }
+
+/* PAGES */
+.menu a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #ccc;
+}
+
+.menu a.active {
+  background: linear-gradient(90deg, #1db954, #1ed760);
+  color: #000;
+  border-radius: 8px;
+}
+
+.page {
+  padding: 20px;
+}
