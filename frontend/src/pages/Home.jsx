@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 import TrackGrid from '../components/TrackGrid';
 import Player from '../components/Player';
 
-export default function Home({ search }) {
+export default function Home({ search, setCurrentTrack, setAutoplay, playlistQueue, playlistIndex, setPlaylistIndex, clearPlaylist }) {
   const [tracks, setTracks] = useState([]);
   const [current, setCurrent] = useState(null);
-  const [autoplay, setAutoplay] = useState(false);
   const [showPlaylistPicker, setShowPlaylistPicker] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [playlists, setPlaylists] = useState([]);
 
-
+  const currentTrack = playlistQueue
+    ? playlistQueue[playlistIndex]
+    : current;
 
   useEffect(() => {
     const delay = setTimeout(async () => {
@@ -75,18 +76,17 @@ export default function Home({ search }) {
       <TrackGrid
         tracks={tracks.slice(0, MAX_TRACKS)}
         onPlay={(t) => {
-          setCurrent(t);
+          setCurrentTrack(t);
           setAutoplay(true);
         }}
         onAddToPlaylist={openPlaylistPicker}
       />
 
-      <Player track={current} autoplay={autoplay} onAutoplayConsumed={() => setAutoplay(false)} />
       {showPlaylistPicker && (
         <div className="playlist-picker-overlay">
           <div className="playlist-picker">
             <h3>Adaugă în playlist</h3>
-            
+
             {playlists.map(p => (
               <button
                 key={p._id}
@@ -95,7 +95,7 @@ export default function Home({ search }) {
                 {p.name}
               </button>
             ))}
-      
+
             <button
               className="cancel"
               onClick={() => setShowPlaylistPicker(false)}

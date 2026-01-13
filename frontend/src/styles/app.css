@@ -72,6 +72,7 @@ main {
 
 /* Track-Card */
 .track-card {
+  position: relative;
   background: linear-gradient(
     180deg,
     var(--bg-secondary),
@@ -102,6 +103,37 @@ main {
   justify-content: center;
   margin-bottom: 12px;
   position: relative;
+  overflow: hidden;
+}
+
+/* BUTON ADD */
+.add-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+
+  width: 26px;
+  height: 26px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(0, 0, 0, 0.55);
+  color: #1db954;
+
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  cursor: pointer;
 }
 
 .cover .play {
@@ -119,9 +151,19 @@ main {
   transition: opacity .2s, transform .2s;
 }
 
+.add-btn:hover {
+  background: rgba(0, 0, 0, 0.75);
+  transform: scale(1.1);
+}
+
 .track-card:hover .play {
   opacity: 1;
   transform: scale(1.1);
+}
+
+.track-card:hover .add-btn {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .meta h4 {
@@ -358,18 +400,47 @@ main {
   margin-bottom: 20px;
 }
 
-.playlist-list li {
-  cursor: pointer;
-  padding: 8px;
+.playlist-create input {
+  flex: 1;
+  background: #0f1f24;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
 }
 
-.playlist-list li.active {
+.playlist-create button {
+  width: 40px;
+  border-radius: 8px;
+  border: none;
   background: #1db954;
-  color: black;
+  font-size: 20px;
+  cursor: pointer;
 }
 
-.add-btn {
-  margin-left: auto;
+.playlist-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.playlist-card {
+  padding: 12px;
+  border-radius: 10px;
+  background: #0f1f24;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.playlist-card:hover {
+  background: #162e35;
+}
+
+.playlist-card.active {
+  background: #1db954;
+  color: #000;
 }
 
 .playlist-picker-overlay {
@@ -403,4 +474,79 @@ main {
 .playlist-picker .cancel {
   background: #333;
   color: #ccc;
+}
+
+
+/* DELETE SONG BUTTON */
+.remove-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(0,0,0,0.55);
+  color: #ff4d4f;
+
+  font-size: 14px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.track-card:hover .remove-btn {
+  opacity: 1;
+}
+
+.remove-btn:hover {
+  background: rgba(0,0,0,0.8);
+  transform: scale(1.1);
+}
+
+
+.playlist-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.playlist-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.playlist-play-btn {
+  background: #1db954;
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.playlist-play-btn:hover {
+  opacity: 0.9;
+}
+
+.delete-playlist-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.delete-playlist-btn:hover {
+  opacity: 1;
 }

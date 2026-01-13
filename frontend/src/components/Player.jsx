@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function Player({ track, autoplay, onAutoplayConsumed }) {
+export default function Player({ track, autoplay, onAutoplayConsumed, onEnded }) {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -102,7 +102,10 @@ export default function Player({ track, autoplay, onAutoplayConsumed }) {
         onLoadedMetadata={onTimeUpdate}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        onEnded={() => setPlaying(false)}
+        onEnded={() => {
+          setPlaying(false);
+          onEnded?.();
+        }}
       />
 
       <div className="player-left">

@@ -1,24 +1,43 @@
-export default function TrackCard({ track, onPlay, onAddToPlaylist }) {
+export default function TrackCard({
+  track,
+  onPlay,
+  onAddToPlaylist,
+  onRemoveFromPlaylist
+}) {
   return (
     <div className="track-card">
-      <div className="cover" onClick={() => onPlay(track)}>
+      <div className="cover" onClick={() => onPlay?.(track)}>
         <span className="play">▶</span>
+
+        {onAddToPlaylist && (
+          <button
+            className="add-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToPlaylist(track);
+            }}
+          >
+            ＋
+          </button>
+        )}
+
+        {onRemoveFromPlaylist && (
+          <button
+            className="remove-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemoveFromPlaylist(track);
+            }}
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       <div className="meta">
         <h4>{track.title}</h4>
         <p>{track.artistRef?.name || track.artist}</p>
       </div>
-
-      <button
-        className="add-btn"
-        onClick={(e) => {
-          e.stopPropagation();
-          onAddToPlaylist(track);
-        }}
-      >
-        ➕
-      </button>
     </div>
   );
 }
