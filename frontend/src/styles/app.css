@@ -550,3 +550,19 @@ main {
 .delete-playlist-btn:hover {
   opacity: 1;
 }
+
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.stat-card {
+  background: #0f2a2e;
+  padding: 16px;
+  border-radius: 10px;
+  text-align: center;
+}

@@ -1,10 +1,12 @@
 const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
+const mm = require("music-metadata");
 const Track = require('../models/Track');
 const Artist = require('../models/Artist');
 
 const router = express.Router();
+
 
 // ================= MULTER =================
 const storage = multer.memoryStorage();
@@ -75,12 +77,22 @@ router.post('/', upload.single('audio'), async (req, res) => {
           }
         }
 
+        //  EXTRAGEM DURATA REALĂ DIN AUDIO
+        const metadata = await mm.parseBuffer(
+          req.file.buffer,
+          req.file.mimetype
+        );
+
+        // durata în SECUNDE (rotunjită)
+        const duration = Math.round(metadata.format.duration || 0);
+
+
         const track = await Track.create({
           title: req.body.title,
           album: req.body.album,
           genre: req.body.genre,
           year: req.body.year ? Number(req.body.year) : undefined,
-          duration: req.body.duration ? Number(req.body.duration) : undefined,
+          duration,
           audioFileId: uploadStream.id,
           mimeType: req.file.mimetype,
 

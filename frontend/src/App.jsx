@@ -7,6 +7,7 @@ import Player from './components/Player';
 
 import Home from './pages/Home';
 import Playlists from './pages/Playlists';
+import Library from "./pages/Library";
 
 import './styles/app.css';
 
@@ -55,7 +56,7 @@ export default function App() {
             }
           />
 
-          <Route path="/library" element={<Home search={search} />} />
+          <Route path="/library" element={<Library />} />
         </Routes>
 
         <Player

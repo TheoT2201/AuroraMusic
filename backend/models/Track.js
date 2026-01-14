@@ -9,7 +9,7 @@ const trackSchema = new mongoose.Schema({
   album: { type: String },
   genre: { type: String },
   year: { type: Number },
-  duration: { type: Number },
+  duration: { type: Number, default: 0 },
   audioFileId: { type: mongoose.Schema.Types.ObjectId, required: true },
   mimeType: { type: String },
   playCount: { type: Number, default: 0 },

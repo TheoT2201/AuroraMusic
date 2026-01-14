@@ -6,6 +6,7 @@ const Track = require('./models/Track');
 // Import rute
 const trackRoutes = require('./routes/tracks');
 const playlistsRoutes = require('./routes/playlists');
+const libraryRoutes = require("./routes/library");
 
 const app = express();
 
@@ -28,6 +29,7 @@ mongoose.connect(mongoURI)
 // Rute
 app.use('/api/tracks', trackRoutes);
 app.use('/api/playlists', playlistsRoutes);
+app.use("/api/library", libraryRoutes);
 
 // Pornim serverul
 const PORT = 5000;

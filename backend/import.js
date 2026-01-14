@@ -2,7 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const mongoose = require('mongoose');
+const mm = require('music-metadata');
+
 const Track = require('./models/Track');
+const Artist = require('./models/Artist');
 
 // ================= CONFIG =================
 const MUSIC_ROOT = path.join(os.homedir(), 'Music');
@@ -24,6 +27,11 @@ function getBucket() {
   });
 }
 
+// ================= UTILS =================
+function normalize(name) {
+  return String(name || '').toLowerCase().replace(/[\.\-]/g, '').trim();
+}
+
 // ================= NORMALIZARE ARTISTI =================
 const ARTIST_ALIASES = new Map([
   ['ab soul', 'Ab-Soul'],
@@ -34,7 +42,7 @@ const ARTIST_ALIASES = new Map([
 ]);
 
 function normalizeArtist(name) {
-  let s = name.trim();
+  let s = String(name || '').trim();
   s = s.replace(/^[\(\[]+|[\)\]]+$/g, '');
   s = s.replace(/\s+/g, ' ');
 
@@ -49,6 +57,17 @@ function normalizeArtist(name) {
         : p.charAt(0).toUpperCase() + p.slice(1)
     )
     .join(' ');
+}
+
+async function getOrCreateArtistId(artistName) {
+  const name = normalizeArtist(artistName);
+  const normalizedName = normalize(name);
+
+  let a = await Artist.findOne({ normalizedName }).lean();
+  if (a) return a._id;
+
+  const created = await Artist.create({ name, normalizedName });
+  return created._id;
 }
 
 // ================= PARSARE ALBUM =================
@@ -102,13 +121,20 @@ function parseTrackFile(fileName) {
   return { title, features };
 }
 
+function guessContentType(file) {
+  const ext = path.extname(file).toLowerCase();
+  if (ext === '.m4a') return 'audio/mp4';
+  if (ext === '.wav') return 'audio/wav';
+  return 'audio/mpeg'; // mp3 default
+}
+
 // ================= IMPORT =================
 async function importMusic() {
   const bucket = getBucket();
-  const artists = fs.readdirSync(MUSIC_ROOT);
+  const artistsFolders = fs.readdirSync(MUSIC_ROOT);
 
-  for (const artist of artists) {
-    const artistPath = path.join(MUSIC_ROOT, artist);
+  for (const artistFolder of artistsFolders) {
+    const artistPath = path.join(MUSIC_ROOT, artistFolder);
     if (!fs.statSync(artistPath).isDirectory()) continue;
 
     const albumsPath = path.join(artistPath, 'Albums');
@@ -126,35 +152,58 @@ async function importMusic() {
       const files = fs.readdirSync(albumPath)
         .filter(f => /\.(mp3|m4a|wav)$/i.test(f));
 
+      // artist principal (din folder)
+      const mainArtistName = normalizeArtist(artistFolder);
+      const mainArtistId = await getOrCreateArtistId(mainArtistName);
+
       for (const file of files) {
         const filePath = path.join(albumPath, file);
         const { title, features } = parseTrackFile(file);
 
-        const uniqueKey = `${artist}|${album}|${title}`.toLowerCase();
+        const uniqueKey = `${mainArtistName}|${album}|${title}`.toLowerCase();
 
         // skip în aceeași rulare
         if (processedCache.has(uniqueKey)) {
-          console.log(`⏭️ Skip (cache): ${artist} - ${title}`);
+          console.log(`⏭️ Skip (cache): ${mainArtistName} - ${title}`);
           continue;
         }
 
-        // skip dacă există deja în DB
-        const exists = await Track.findOne({ artist, album, title }).lean();
+        // skip dacă există deja în DB (după artist+album+title)
+        const exists = await Track.findOne({ artist: mainArtistName, album, title }).lean();
         if (exists) {
-          console.log(`⏭️ Skip (DB): ${artist} - ${title}`);
+          console.log(`⏭️ Skip (DB): ${mainArtistName} - ${title}`);
           processedCache.add(uniqueKey);
           continue;
         }
 
         processedCache.add(uniqueKey);
 
+        // === duration reală din fișier ===
+        let duration = 0;
+        try {
+          const metadata = await mm.parseFile(filePath);
+          duration = Math.round(metadata.format.duration || 0);
+        } catch (e) {
+          console.warn(`⚠️ Nu am putut citi duration pentru: ${file} (${e.message})`);
+        }
+
+        // === featureRefs ===
+        const featureRefs = [];
+        for (const f of features) {
+          const id = await getOrCreateArtistId(f);
+          featureRefs.push(id);
+        }
+
         console.log(
-          `🎵 Import: ${artist} - ${title}` +
-          (features.length ? ` (feat. ${features.join(', ')})` : '')
+          `🎵 Import: ${mainArtistName} - ${title}` +
+          (features.length ? ` (feat. ${features.join(', ')})` : '') +
+          (duration ? ` [${duration}s]` : '')
         );
 
+        const contentType = guessContentType(file);
+
         const uploadStream = bucket.openUploadStream(file, {
-          contentType: file.endsWith('.m4a') ? 'audio/mp4' : 'audio/mpeg'
+          contentType
         });
 
         fs.createReadStream(filePath).pipe(uploadStream);
@@ -164,24 +213,32 @@ async function importMusic() {
             try {
               await Track.create({
                 title,
-                artist,
-                features,
                 album,
                 year,
+                duration, // ✅ aici intră durata reală
+
                 audioFileId: uploadStream.id,
-                mimeType: uploadStream.options.contentType
+                mimeType: contentType,
+
+                // ✅ noul tău model cu refs
+                artistRef: mainArtistId,
+                featureRefs,
+
+                // ✅ compatibilitate veche (cum ai în tracks.js)
+                artist: mainArtistName,
+                features
               });
               resolve();
             } catch (err) {
-              // protecție finală (index unic)
               if (err.code === 11000) {
-                console.log(`⏭️ Skip (index): ${artist} - ${title}`);
+                console.log(`⏭️ Skip (index): ${mainArtistName} - ${title}`);
                 resolve();
               } else {
                 reject(err);
               }
             }
           });
+
           uploadStream.on('error', reject);
         });
       }
