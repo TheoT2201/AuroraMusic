@@ -566,3 +566,126 @@ main {
   border-radius: 10px;
   text-align: center;
 }
+
+
+/* PANELS */
+.library-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.panel {
+  background: rgba(15, 42, 46, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 16px;
+  backdrop-filter: blur(6px);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.panel-icon {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.row-label {
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 0.95;
+}
+
+.bar {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(0, 255, 160, 0.65), rgba(0, 220, 255, 0.55));
+}
+
+.muted {
+  opacity: 0.7;
+  margin: 0;
+  font-size: 13px;
+}
+
+/* Years section: două coloane pe ecrane mari */
+.years-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.year-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.year-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.year {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .library-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .year-row {
+    grid-template-columns: 1fr;
+  }
+
+  .year-left {
+    justify-content: flex-start;
+  }
+}
